@@ -39,6 +39,9 @@
     <ClCompile Include="..\Classes\BackgroundNode.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\NumberNode.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -69,6 +72,9 @@
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\BackgroundNode.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\NumberNode.h">
       <Filter>Classes</Filter>
     </ClInclude>
   </ItemGroup>

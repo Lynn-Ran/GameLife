@@ -3,13 +3,15 @@
 
 #include "BirdSprite.h"
 #include "LandNode.h"
+#include "BackgroundNode.h"
+#include "NumberNode.h"
 
 class GameLayer : public cocos2d::Layer
 {
 	enum
 	{
 		eGameStatus_Ready,
-		eGameStatus_Tick,
+		eGameStatus_Play,
 		eGameStatus_Over,
 	};
 public:
@@ -32,14 +34,17 @@ public:
 	void resetPipes();
 	void randPipeY(cocos2d::Sprite *pipeUp,cocos2d::Sprite * pipeDown);
 
+	void SetShowOver(bool);
 	void SetShowReady(bool b);
-	void ResetBirdInfo(bool bGravity,bool resetPos);
+	void ResetBirdInfo(bool bNew,bool bGravity,bool resetPos);
 protected:
 
 	cocos2d::PhysicsBody * CreatePhysicsBody(cocos2d::PhysicsShape * pShape,bool bDynamic,bool bEnableGravity,int iBodyMark,int iCollisionMark);
 
+	BackgroundNode	* background;
 	LandNode		* landNode;
 	BridSprite		* pBird;
+	NumberNode		* pScore;
 
 	int				  iStatus;
 

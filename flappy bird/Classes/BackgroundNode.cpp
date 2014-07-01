@@ -3,6 +3,11 @@
 
 USING_NS_CC;
 
+bool BackgroundNode::IsNight()
+{
+	return bNight;
+}
+
 bool BackgroundNode::init()
 {
 	Director * pDirector = Director::getInstance();
@@ -16,10 +21,12 @@ bool BackgroundNode::init()
 	Sprite * pBg = NULL;
 	if(hour>=7 && hour <=18)
 	{
+		bNight = false;
 		pBg = Sprite::createWithSpriteFrameName("bg_day");
 	}
 	else
 	{
+		bNight = true;
 		pBg = Sprite::createWithSpriteFrameName("bg_night");
 	}
 	pBg->setPosition(Point(origin.x + visibleSize.width/2,origin.y + visibleSize.height/2));

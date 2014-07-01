@@ -7,9 +7,12 @@ public:
 
     CREATE_FUNC(BackgroundNode);
 
+	bool IsNight();
 protected:
 
 	virtual bool init();  
+
+	bool	bNight;
 };
 
 

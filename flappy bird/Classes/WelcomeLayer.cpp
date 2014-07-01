@@ -30,11 +30,6 @@ bool WelcomeLayer::init()
 	Size visibleSize = pDirector->getVisibleSize();
 	Point origin = pDirector->getVisibleOrigin();
 
-	//当前时间点
-	time_t t = time(NULL);
-	tm * ptm = localtime(&t);
-	int hour = ptm->tm_hour;
-
 	//背景
 	auto pBgLayer = BackgroundNode::create();
 	addChild(pBgLayer);

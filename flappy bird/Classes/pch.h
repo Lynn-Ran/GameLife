@@ -22,10 +22,12 @@
 #define PipeGapY		100.f			//管道开口大小
 #define PipeGapX		170.f			//管道间距
 
-
+#define PIPE_PASS		30
+#define PIPE_NEW		31
 #define BirdTag			1000
 #define ReadyTag		1001
 #define TutorialTag		1002
+#define OverTag			1003
 
 #endif
 

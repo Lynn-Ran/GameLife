@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "GameLayer.h"
-#include "BackgroundNode.h"
+
 
 USING_NS_CC;
 
@@ -15,8 +15,8 @@ bool GameLayer::init()
 	Point origin = pDirector->getVisibleOrigin();
 
 	//背景
-	auto pBgLayer = BackgroundNode::create();
-	addChild(pBgLayer);
+	background = BackgroundNode::create();
+	addChild(background);
 
 	//陆地
 	landNode = LandNode::create();
@@ -30,14 +30,10 @@ bool GameLayer::init()
 	pnode->setPosition(visibleSize.width/2,landNode->getLandSize().height/2);
 	addChild(pnode);
 
-	//小鸟
-	pBird = BridSprite::create();
-	body = CreatePhysicsBody(PhysicsShapeCircle::create(pBird->getContentSize().width*0.35f),true,false,BirdMark,BirdCollisionMark);
-	pBird->setPhysicsBody(body);
-	pBird->setPosition(origin.x + visibleSize.width*1/3 - 5,origin.y + visibleSize.height/2 + 5);
-	pBird->fly();
-	pBird->setTag(BirdTag);
-	addChild(pBird,2);
+	//分数
+	pScore = NumberNode::create();
+	pScore->setPosition(Point(origin.x + visibleSize.width/2,origin.y + visibleSize.height * 6 / 7));
+	addChild(pScore,3);
 
 	//添加水管
 	addPipes();
@@ -69,18 +65,49 @@ void GameLayer::SetShowReady(bool b)
 	}
 }
 
-void GameLayer::ResetBirdInfo(bool bGravity,bool resetPos)
+void GameLayer::SetShowOver(bool b)
+{
+	if (b)
+	{
+		Director * pDirector = Director::getInstance();
+		Size visibleSize = pDirector->getVisibleSize();
+		Point origin = pDirector->getVisibleOrigin();
+
+		Sprite* gameoverSprite = Sprite::createWithSpriteFrameName("text_game_over");
+		gameoverSprite->setPosition(Point(origin.x + visibleSize.width / 2, origin.y + visibleSize.height *2/3));
+		addChild(gameoverSprite,1,OverTag);
+
+	}
+	else
+	{
+		removeChildByTag(OverTag);
+	}
+}
+
+void GameLayer::ResetBirdInfo(bool bNew,bool bGravity,bool resetPos)
 {
 	Director * pDirector = Director::getInstance();
 	Size visibleSize = pDirector->getVisibleSize();
 	Point origin = pDirector->getVisibleOrigin();
+
+	if (bNew)
+	{
+		removeChildByTag(BirdTag);
+		pBird = BridSprite::create();
+		auto body = CreatePhysicsBody(PhysicsShapeCircle::create(pBird->getContentSize().width*0.35f),true,false,BirdMark,BirdCollisionMark);
+		pBird->setPhysicsBody(body);
+		pBird->setPosition(origin.x + visibleSize.width*1/3 - 5,origin.y + visibleSize.height/2 + 5);
+		pBird->fly();
+		pBird->setTag(BirdTag);
+		addChild(pBird,2);
+	}
 
 	pBird->setRotation(0.f);
 	auto body = pBird->getPhysicsBody();
 	body->setGravityEnable(bGravity);
 	body->setVelocity(Vect::ZERO);
 
-	if(resetPos)
+	if(resetPos&&!bNew)
 	{
 		pBird->setPosition(origin.x + visibleSize.width*1/3 - 5,origin.y + visibleSize.height/2 + 5);
 	}
@@ -119,12 +146,21 @@ void GameLayer::movePipes(float /*dt*/)
 		{
 			pipeUp->setPositionX(fX+fPipeDiff);
 			pipeDown->setPositionX(fX+fPipeDiff);
+			pipeDown->setTag(PIPE_NEW);
 			randPipeY(pipeUp,pipeDown);
 		}
 		else
 		{
 			pipeUp->setPositionX(fX);
 			pipeDown->setPositionX(fX);
+			if(fX<pBird->getPositionX()&&pipeDown->getTag()==PIPE_NEW)
+			{
+				pScore->Add();
+				pipeDown->setTag(PIPE_PASS);
+
+				auto pAudioEngine = CocosDenshion::SimpleAudioEngine::getInstance();
+				pAudioEngine->playEffect("sfx_point.ogg");
+			}
 		}
 		it++;
 	}
@@ -144,6 +180,7 @@ void GameLayer::resetPipes()
 		Sprite * pipeDown = it->second;
 
 		pipeDown->setPositionX(visibleSize.width+pipeDown->getContentSize().width/2+fOffsetX);
+		pipeDown->setTag(PIPE_NEW);
 		pipeUp->setPositionX(visibleSize.width+pipeUp->getContentSize().width/2+fOffsetX);
 
 		randPipeY(pipeUp,pipeDown);
@@ -154,17 +191,30 @@ void GameLayer::resetPipes()
 
 void GameLayer::addPipes()
 {
+	std::string UpName,DownName;
+	if (background->IsNight())
+	{
+		UpName = "pipe2_up";
+		DownName = "pipe2_down";
+	}
+	else
+	{
+		UpName = "pipe_up";
+		DownName = "pipe_down";
+	}
+
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	fPipeDiff = 0.f;
 	float fDiffX_MAX = visibleSize.width+PipeGapX;
 	while (fPipeDiff<=fDiffX_MAX)
 	{
-		Sprite * pipeDown = Sprite::createWithSpriteFrameName("pipe_up");
+		Sprite * pipeDown = Sprite::createWithSpriteFrameName(UpName);
 		PhysicsBody *body = CreatePhysicsBody(PhysicsShapeBox::create(pipeDown->getContentSize()),false,false,PipeMark,PipeCollisionMark);
 		pipeDown->setPhysicsBody(body);
+		pipeDown->setTag(PIPE_NEW);
 		addChild(pipeDown,1);
 
-		Sprite * pipeUp = Sprite::createWithSpriteFrameName("pipe_down");
+		Sprite * pipeUp = Sprite::createWithSpriteFrameName(DownName);
 		body = CreatePhysicsBody(PhysicsShapeBox::create(pipeUp->getContentSize()),false,false,PipeMark,PipeCollisionMark);
 		pipeUp->setPhysicsBody(body);
 		addChild(pipeUp,1);
@@ -183,8 +233,8 @@ void GameLayer::randPipeY(Sprite *pipeUp,Sprite * pipeDown)
 {
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 
-	int hightMin = landNode->getLandSize().height-pipeDown->getContentSize().height+20;
-	int hightMax = landNode->getLandSize().height-20;
+	int hightMin = landNode->getLandSize().height-pipeDown->getContentSize().height+40;
+	int hightMax = visibleSize.height-pipeDown->getContentSize().height-PipeGapY-40;
 	int randSize = hightMax-hightMin;
 
 	int downHight = hightMin+rand()%randSize+pipeDown->getContentSize().height/2;
@@ -200,9 +250,9 @@ void GameLayer::onTouch()
 	{
 	case eGameStatus_Ready:
 		{
-			OnGameState(eGameStatus_Tick);
+			OnGameState(eGameStatus_Play);
 		}
-	case eGameStatus_Tick:
+	case eGameStatus_Play:
 		{
 			auto pAudioEngine = CocosDenshion::SimpleAudioEngine::getInstance();
 			pAudioEngine->playEffect("sfx_wing.ogg");
@@ -245,14 +295,16 @@ void GameLayer::OnGameState(int itype)
 	{
 	case eGameStatus_Ready:
 		{
-			ResetBirdInfo(false,true);
 			SetShowReady(true);
+			SetShowOver(false);
+			ResetBirdInfo(true,false,true);
 			landNode->startMove(false);
+			pScore->SetNumber(0);
 		}
 		break;
-	case eGameStatus_Tick:
+	case eGameStatus_Play:
 		{
-			ResetBirdInfo(true,false);
+			ResetBirdInfo(false,true,false);
 			SetShowReady(false);
 			landNode->startMove(true);
 			schedule(schedule_selector(GameLayer::movePipes),pDirector->getAnimationInterval());
@@ -261,7 +313,8 @@ void GameLayer::OnGameState(int itype)
 	case eGameStatus_Over:
 		{
 			resetPipes();
-			ResetBirdInfo(false,true);
+			SetShowOver(true);
+			removeChildByTag(BirdTag);
 			landNode->startMove(false);
 			unschedule(schedule_selector(GameLayer::movePipes));
 		}
