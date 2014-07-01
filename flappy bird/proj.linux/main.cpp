@@ -1,3 +1,4 @@
+#include "cocos2d.h"
 #include "../Classes/AppDelegate.h"
 
 #include <stdlib.h>

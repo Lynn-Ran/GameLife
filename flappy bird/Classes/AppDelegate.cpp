@@ -67,8 +67,9 @@ void AppDelegate::InitResSearchPath()
     FileUtils::getInstance()->setSearchResolutionsOrder(paths);
 }
 
-void onKeyBegan(EventKeyboard::KeyCode keycode, Event*pEvent)
+void onKeyReleased(EventKeyboard::KeyCode keycode, Event*pEvent)
 {
+	log("onKeyReleased-------------->keycode:%d",keycode);
 	if (keycode==EventKeyboard::KeyCode::KEY_BACKSPACE||
 		keycode==EventKeyboard::KeyCode::KEY_MENU )
 	{
@@ -79,11 +80,17 @@ void onKeyBegan(EventKeyboard::KeyCode keycode, Event*pEvent)
 	}
 }
 
+void onKeyPressed(EventKeyboard::KeyCode keycode, Event*pEvent)
+{
+	log("onKeyPressed-------------->keycode:%d",keycode);
+}
+
 void AddKeyListener(Node * listener)
 {
 	auto dispatcher = Director::getInstance()->getEventDispatcher();
 	auto keyListener = EventListenerKeyboard::create();
-	keyListener->onKeyReleased = onKeyBegan;
+	keyListener->onKeyReleased = onKeyReleased;
+	keyListener->onKeyPressed = onKeyPressed;
 	dispatcher->addEventListenerWithSceneGraphPriority(keyListener, listener);
 
 }

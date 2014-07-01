@@ -50,7 +50,6 @@ void LoadScene::LoadCallback(Texture2D* tex)
 	pAudioEngine->preloadEffect("sfx_point.ogg");
 	pAudioEngine->preloadEffect("sfx_swooshing.ogg");
 	pAudioEngine->preloadEffect("sfx_wing.ogg");
-	pAudioEngine->setEffectsVolume(1.f);
 
 	//ÇÐ»»³¡¾°
 	Director::getInstance()->replaceScene(TransitionFade::create(1,WelcomeLayer::createScene()));

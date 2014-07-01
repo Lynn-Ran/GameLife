@@ -216,6 +216,10 @@ void GameLayer::addPipes()
 
 		Sprite * pipeUp = Sprite::createWithSpriteFrameName(DownName);
 		body = CreatePhysicsBody(PhysicsShapeBox::create(pipeUp->getContentSize()),false,false,PipeMark,PipeCollisionMark);
+		if (background->IsNight())
+		{
+			pipeUp->setRotation(180);
+		}
 		pipeUp->setPhysicsBody(body);
 		addChild(pipeUp,1);
 
@@ -276,6 +280,8 @@ void GameLayer::onTouch()
 		break;
 	case eGameStatus_Over:
 		{
+			auto pAudioEngine = CocosDenshion::SimpleAudioEngine::getInstance();
+			pAudioEngine->playEffect("sfx_die.ogg");
 			OnGameState(eGameStatus_Ready);
 		}
 	default:
