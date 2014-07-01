@@ -29,3 +29,6 @@ audio.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, A
 	      return super.onKeyDown(pKeyCode, pKeyEvent);
 	}
 }
+
+–ﬁ∏ƒproj.android\AndroidManifest.xml…Ë÷√
+<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" /> 
