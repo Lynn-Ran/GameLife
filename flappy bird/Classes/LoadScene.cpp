@@ -52,24 +52,7 @@ void LoadScene::LoadCallback(Texture2D* tex)
 	pAudioEngine->preloadEffect("sfx_wing.ogg");
 	pAudioEngine->setEffectsVolume(1.f);
 
-	auto dispatcher = Director::getInstance()->getEventDispatcher();
-	auto keyListener = EventListenerKeyboard::create();
-	keyListener->onKeyReleased = CC_CALLBACK_2(LoadScene::onKeyBegan, this);
-	dispatcher->addEventListenerWithSceneGraphPriority(keyListener, this);
-
-
 	//ÇÐ»»³¡¾°
 	Director::getInstance()->replaceScene(TransitionFade::create(1,WelcomeLayer::createScene()));
 }
 
-void LoadScene::onKeyBegan(EventKeyboard::KeyCode keycode, Event*pEvent)
-{
-	if (keycode==EventKeyboard::KeyCode::KEY_BACKSPACE||
-		keycode==EventKeyboard::KeyCode::KEY_MENU )
-	{
-		Director::getInstance()->end();
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-		exit(0);
-#endif
-	}
-}

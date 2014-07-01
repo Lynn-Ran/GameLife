@@ -4,6 +4,8 @@
 
 USING_NS_CC;
 
+void AddKeyListener(Node * listener);
+
 bool GameScene::init()
 {
 	if (Scene::initWithPhysics())
@@ -26,6 +28,8 @@ bool GameScene::init()
         listener->onTouchesBegan = CC_CALLBACK_2(GameScene::onTouchBegan, this);
 		auto dispatcher = Director::getInstance()->getEventDispatcher();
         dispatcher->addEventListenerWithSceneGraphPriority(listener, pGameLayer);
+		
+		AddKeyListener(this);
 		return true;
 	}
     return false;;

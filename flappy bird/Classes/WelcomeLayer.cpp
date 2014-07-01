@@ -8,6 +8,8 @@
 
 USING_NS_CC;
 
+void AddKeyListener(Node * listener);
+
 Scene * WelcomeLayer::createScene()
 {
 	auto scene = Scene::create();
@@ -65,6 +67,7 @@ bool WelcomeLayer::init()
 	bird->idle();
 	addChild(bird);
 
+	AddKeyListener(this);
 	return true;
 }
 

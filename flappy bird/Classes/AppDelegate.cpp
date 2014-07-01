@@ -15,14 +15,15 @@ AppDelegate::~AppDelegate()
 bool AppDelegate::applicationDidFinishLaunching() {
     // initialize director
     auto director = Director::getInstance();
+
     auto glview = director->getOpenGLView();
     if(!glview) {
 		glview = GLView::createWithRect("bird",Rect(0,0,DefaultWidth,DefaultHeight));
 
 		director->setOpenGLView(glview);
-
-		glview->setDesignResolutionSize(DefaultWidth,DefaultHeight,ResolutionPolicy::SHOW_ALL);
     }
+	//坑爹呀，老子一直写if里面，试了3小时才发现要写外面
+	glview->setDesignResolutionSize(DefaultWidth,DefaultHeight,ResolutionPolicy::SHOW_ALL);
 
 	InitResSearchPath();
 
@@ -64,4 +65,25 @@ void AppDelegate::InitResSearchPath()
     paths.push_back("image");
     paths.push_back("sounds");
     FileUtils::getInstance()->setSearchResolutionsOrder(paths);
+}
+
+void onKeyBegan(EventKeyboard::KeyCode keycode, Event*pEvent)
+{
+	if (keycode==EventKeyboard::KeyCode::KEY_BACKSPACE||
+		keycode==EventKeyboard::KeyCode::KEY_MENU )
+	{
+		Director::getInstance()->end();
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+		exit(0);
+#endif
+	}
+}
+
+void AddKeyListener(Node * listener)
+{
+	auto dispatcher = Director::getInstance()->getEventDispatcher();
+	auto keyListener = EventListenerKeyboard::create();
+	keyListener->onKeyReleased = onKeyBegan;
+	dispatcher->addEventListenerWithSceneGraphPriority(keyListener, listener);
+
 }

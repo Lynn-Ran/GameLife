@@ -12,7 +12,6 @@ protected:
 	virtual void onEnter() override;
 
 protected:
-	void onKeyBegan(cocos2d::EventKeyboard::KeyCode keycode, cocos2d::Event*pEvent);
 
 	void LoadCallback(cocos2d::Texture2D* tex);
 };
