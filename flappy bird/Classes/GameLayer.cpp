@@ -280,8 +280,6 @@ void GameLayer::onTouch()
 		break;
 	case eGameStatus_Over:
 		{
-			auto pAudioEngine = CocosDenshion::SimpleAudioEngine::getInstance();
-			pAudioEngine->playEffect("sfx_die.ogg");
 			OnGameState(eGameStatus_Ready);
 		}
 	default:
@@ -290,7 +288,9 @@ void GameLayer::onTouch()
 }
 
 void GameLayer::onBirdHitPips()
-{
+{			
+	auto pAudioEngine = CocosDenshion::SimpleAudioEngine::getInstance();
+	pAudioEngine->playEffect("sfx_die.ogg");
 	OnGameState(eGameStatus_Over);
 }
 
