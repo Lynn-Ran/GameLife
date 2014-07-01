@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "GameLayer.h"
-
+#include "SimpleAudioEngine.h"
 
 USING_NS_CC;
 

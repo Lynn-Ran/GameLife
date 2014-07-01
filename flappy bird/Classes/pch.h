@@ -3,7 +3,6 @@
 
 
 #include "cocos2d.h"
-#include "SimpleAudioEngine.h"
 
 #define min(X,Y) ((X) < (Y) ? (X) : (Y)) 
 #define max(X,Y) ((X) > (Y) ? (X) : (Y)) 
