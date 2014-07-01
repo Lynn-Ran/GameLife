@@ -17,8 +17,11 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
     if(!glview) {
-        glview = GLView::createWithRect("bird",Rect(0,0,288,512));
-        director->setOpenGLView(glview);
+		glview = GLView::createWithRect("bird",Rect(0,0,DefaultWidth,DefaultHeight));
+
+		director->setOpenGLView(glview);
+
+		glview->setDesignResolutionSize(DefaultWidth,DefaultHeight,ResolutionPolicy::SHOW_ALL);
     }
 
 	InitResSearchPath();

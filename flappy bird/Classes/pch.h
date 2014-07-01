@@ -14,6 +14,8 @@
 #define PipeMark 0x4
 #define PipeCollisionMark 0x1
 
+#define DefaultHeight   512.f
+#define DefaultWidth	288.f
 
 #define WorldGravity	-800.f			//世界重力
 #define UpJumpSpeed		250.f			//小鸟向上速度
