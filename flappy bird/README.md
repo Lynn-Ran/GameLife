@@ -17,12 +17,12 @@ public boolean onKeyDown(final int pKeyCode, final KeyEvent pKeyEvent) {
 		return true;
 	case KeyEvent.KEYCODE_VOLUME_UP:{
 	     AudioManager audio = (AudioManager) this.getContext().getSystemService(Context.AUDIO_SERVICE);
-	     audio.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, 					AudioManager.FLAG_PLAY_SOUND | AudioManager.FLAG_SHOW_UI);
+	     audio.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_PLAY_SOUND | AudioManager.FLAG_SHOW_UI);
 	     }
 	     return true;
 	case KeyEvent.KEYCODE_VOLUME_DOWN:{
-AudioManager audio = (AudioManager) this.getContext().getSystemService(Context.AUDIO_SERVICE);
-audio.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_PLAY_SOUND | AudioManager.FLAG_SHOW_UI);
+	     AudioManager audio = (AudioManager) this.getContext().getSystemService(Context.AUDIO_SERVICE);
+	     audio.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_PLAY_SOUND | AudioManager.FLAG_SHOW_UI);
 	     }
 	     return true;
 	default:
