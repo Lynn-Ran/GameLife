@@ -1,10 +1,10 @@
 Flappy Bird
 ===========
-1.win32:working Directory :$(ProjectDir)..\Resources
-2.ÖØĞÂÖ¸¶¨ÒıÓÃcocos2dÂ·¾¶
-3.androidÊÖ»úÒôÁ¿½¨ÏìÓ¦
-ĞŞ¸Äcocos2d\cocos\2d\platform\android\java\src\org\cocos2dx\lib\Cocos2dxGLSurfaceView.javaÎÄ¼şonKeyDownº¯Êı£¬×îÖÕÈçÏÂ
+1. win32:working Directory :$(ProjectDir)..\Resources
+2. é‡æ–°æŒ‡å®šå¼•ç”¨cocos2dè·¯å¾„
+3. androidæ‰‹æœºéŸ³é‡å»ºå“åº” ä¿®æ”¹cocos2d\cocos\2d\platform\android\java\src\org\cocos2dx\lib\Cocos2dxGLSurfaceView.javaæ–‡ä»¶onKeyDownå‡½æ•°ï¼Œæœ€ç»ˆå¦‚ä¸‹:
 
+```
 public boolean onKeyDown(final int pKeyCode, final KeyEvent pKeyEvent) {
    switch (pKeyCode) {
 	case KeyEvent.KEYCODE_BACK:
@@ -29,6 +29,10 @@ audio.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, A
 	      return super.onKeyDown(pKeyCode, pKeyEvent);
 	}
 }
+```
 
-ĞŞ¸Äproj.android\AndroidManifest.xmlÉèÖÃ
+ä¿®æ”¹proj.android\AndroidManifest.xmlè®¾ç½®
+
+```
 <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" /> 
+```
