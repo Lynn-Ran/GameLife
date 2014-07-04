@@ -2,9 +2,12 @@ Flappy Bird
 ===========
 1. win32:working Directory :$(ProjectDir)..\Resources
 2. 重新指定引用cocos2d路径
-3. android手机音量建响应 修改cocos2d\cocos\2d\platform\android\java\src\org\cocos2dx\lib\Cocos2dxGLSurfaceView.java文件onKeyDown函数，最终如下:
+3. android手机音量建响应 
 
-```
+修改cocos2d\cocos\2d\platform\android\java\src\org\cocos2dx\lib\Cocos2dxGLSurfaceView.java文件
+加入 import android.media.AudioManager;
+onKeyDown函数，最终如下:
+
 public boolean onKeyDown(final int pKeyCode, final KeyEvent pKeyEvent) {
    switch (pKeyCode) {
 	case KeyEvent.KEYCODE_BACK:
