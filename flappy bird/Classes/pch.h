@@ -19,6 +19,7 @@
 
 #define WorldGravity	-800.f			//世界重力
 #define UpJumpSpeed		250.f			//小鸟向上速度
+#define UpJumpSpeedMax	370.f			//小鸟最大速度
 #define PipeMoveXSpeed	2.f				//水管移动速度
 #define PipeGapY		100.f			//管道开口大小
 #define PipeGapX		170.f			//管道间距

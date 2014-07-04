@@ -23,11 +23,12 @@ bool GameLayer::init()
 	landNode->startMove(false);
 	addChild(landNode,2);
 
-	//底部碰撞
-	auto * pnode = Node::create();
-	auto body = CreatePhysicsBody(PhysicsShapeBox::create(landNode->getLandSize()),false,false,LandMark,LandCollisionMark);
+	//边界碰撞
+	auto pnode = Node::create();
+	Size sz = Size(visibleSize.width,visibleSize.height-landNode->getLandSize().height);
+	auto body = CreatePhysicsBody(PhysicsShapeEdgeBox::create(sz),false,false,LandMark,LandCollisionMark);
 	pnode->setPhysicsBody(body);
-	pnode->setPosition(visibleSize.width/2,landNode->getLandSize().height/2);
+	pnode->setPosition(visibleSize.width/2,landNode->getLandSize().height+sz.height/2);
 	addChild(pnode);
 
 	//分数
@@ -38,6 +39,7 @@ bool GameLayer::init()
 	//添加水管
 	addPipes();
 
+	bEnableStart = true;
 	OnGameState(eGameStatus_Ready);
 	return true;
 }
@@ -65,6 +67,11 @@ void GameLayer::SetShowReady(bool b)
 	}
 }
 
+void GameLayer::PrepareStart(float)
+{
+	bEnableStart = true;
+}
+
 void GameLayer::SetShowOver(bool b)
 {
 	if (b)
@@ -74,9 +81,13 @@ void GameLayer::SetShowOver(bool b)
 		Point origin = pDirector->getVisibleOrigin();
 
 		Sprite* gameoverSprite = Sprite::createWithSpriteFrameName("text_game_over");
-		gameoverSprite->setPosition(Point(origin.x + visibleSize.width / 2, origin.y + visibleSize.height *2/3));
+		gameoverSprite->setPosition(Point(origin.x + visibleSize.width / 2, origin.y-gameoverSprite->getContentSize().height/2));
+		ActionInterval *up = CCMoveBy::create(0.3f,Point(0, gameoverSprite->getContentSize().height/2 + visibleSize.height *2/3));
+		gameoverSprite->runAction(up);
 		addChild(gameoverSprite,1,OverTag);
 
+		bEnableStart = false;
+		scheduleOnce(schedule_selector(GameLayer::PrepareStart),0.35f);
 	}
 	else
 	{
@@ -130,7 +141,7 @@ PhysicsBody * GameLayer::CreatePhysicsBody(PhysicsShape * pShape,bool bDynamic,b
 void GameLayer::birdUpdate()
 {
 	float verticalSpeed = pBird->getPhysicsBody()->getVelocity().y;
-	pBird->setRotation(min(max(-90, (verticalSpeed*0.2 + 60)), 30));
+	pBird->setRotation(-min(max(-90, (verticalSpeed*0.2 + 60)), 30));
 }
 
 void GameLayer::movePipes(float /*dt*/)
@@ -262,13 +273,12 @@ void GameLayer::onTouch()
 			pAudioEngine->playEffect("sfx_wing.ogg");
 			auto body = pBird->getPhysicsBody();
 			Vect v = body->getVelocity();
-			static const float fMaxJumpSpeed =  UpJumpSpeed*1.5f;
 			if (v.y>0)
 			{
 				v.y += UpJumpSpeed;
-				if (v.y>fMaxJumpSpeed)
+				if (v.y>UpJumpSpeedMax)
 				{
-					v.y = fMaxJumpSpeed;
+					v.y = UpJumpSpeedMax;
 				}
 			}
 			else
@@ -280,18 +290,32 @@ void GameLayer::onTouch()
 		break;
 	case eGameStatus_Over:
 		{
-			OnGameState(eGameStatus_Ready);
+			if (bEnableStart)
+			{
+				OnGameState(eGameStatus_Ready);
+			}
 		}
 	default:
 		break;
 	}
 }
 
-void GameLayer::onBirdHitPips()
+void GameLayer::onBirdHit()
 {			
-	auto pAudioEngine = CocosDenshion::SimpleAudioEngine::getInstance();
-	pAudioEngine->playEffect("sfx_die.ogg");
-	OnGameState(eGameStatus_Over);
+	if(iStatus==eGameStatus_Play)
+	{
+		auto pAudioEngine = CocosDenshion::SimpleAudioEngine::getInstance();
+		pAudioEngine->playEffect("sfx_die.ogg");
+		OnGameState(eGameStatus_PreOver);
+	}
+	else if (iStatus==eGameStatus_PreOver)
+	{
+		auto body = pBird->getPhysicsBody();
+		Vect v = body->getVelocity();
+		if (v.x >0.0001f || v.y != 0.f)
+			return;
+		OnGameState(eGameStatus_Over);
+	}
 }
 
 void GameLayer::OnGameState(int itype)
@@ -300,9 +324,10 @@ void GameLayer::OnGameState(int itype)
 	switch (itype)
 	{
 	case eGameStatus_Ready:
-		{
-			SetShowReady(true);
+		{	
+			resetPipes();
 			SetShowOver(false);
+			SetShowReady(true);
 			ResetBirdInfo(true,false,true);
 			landNode->startMove(false);
 			pScore->SetNumber(0);
@@ -316,13 +341,16 @@ void GameLayer::OnGameState(int itype)
 			schedule(schedule_selector(GameLayer::movePipes),pDirector->getAnimationInterval());
 		}
 		break;
-	case eGameStatus_Over:
+	case eGameStatus_PreOver:
 		{
-			resetPipes();
-			SetShowOver(true);
-			removeChildByTag(BirdTag);
+			pBird->dead();
 			landNode->startMove(false);
 			unschedule(schedule_selector(GameLayer::movePipes));
+		}
+		break;
+	case eGameStatus_Over:
+		{
+			SetShowOver(true);	
 		}
 		break;
 	default:

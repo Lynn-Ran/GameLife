@@ -12,6 +12,7 @@ class GameLayer : public cocos2d::Layer
 	{
 		eGameStatus_Ready,
 		eGameStatus_Play,
+		eGameStatus_PreOver,
 		eGameStatus_Over,
 	};
 public:
@@ -25,7 +26,7 @@ public:
 
 public:
 	void onTouch();
-	void onBirdHitPips();
+	void onBirdHit();
 
 	void movePipes(float dt);
 	void birdUpdate();
@@ -34,6 +35,7 @@ public:
 	void resetPipes();
 	void randPipeY(cocos2d::Sprite *pipeUp,cocos2d::Sprite * pipeDown);
 
+	void PrepareStart(float dt);
 	void SetShowOver(bool);
 	void SetShowReady(bool b);
 	void ResetBirdInfo(bool bNew,bool bGravity,bool resetPos);
@@ -46,6 +48,7 @@ protected:
 	BridSprite		* pBird;
 	NumberNode		* pScore;
 
+	bool			  bEnableStart;
 	int				  iStatus;
 
 	cocos2d::Map< cocos2d::Sprite *,cocos2d::Sprite *> vPipes;

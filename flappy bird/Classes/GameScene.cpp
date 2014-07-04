@@ -12,7 +12,7 @@ bool GameScene::init()
 	{
 		auto pPhysicsWorld = getPhysicsWorld();
 		pPhysicsWorld->setGravity(Vect(0.f,WorldGravity));
-		//pPhysicsWorld->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL); //调试时使用 
+		pPhysicsWorld->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL); //调试时使用 
 
 		//游戏
 		auto pGameLayer = GameLayer::create();
@@ -20,7 +20,7 @@ bool GameScene::init()
 
 		//添加碰撞监视
 		auto contactListener = EventListenerPhysicsContact::create();
-		contactListener->onContactBegin = CC_CALLBACK_1(GameScene::onHitBegan, this);
+		contactListener->onContactPreSolve = CC_CALLBACK_2(GameScene::onHit, this);
 		this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(contactListener, pGameLayer);
 
 		//添加按键响应
@@ -41,14 +41,18 @@ void GameScene::onTouchBegan(const std::vector<Touch*>& /*touches*/, Event *pEve
 	pGameLayer->onTouch();
 }
 
-bool GameScene::onHitBegan(PhysicsContact& contact)
+bool GameScene::onHit(PhysicsContact& contact,PhysicsContactPreSolve& solve)
 {
 	Node * pNodeA = contact.getShapeA()->getBody()->getNode();
 	Node * pNodeB = contact.getShapeB()->getBody()->getNode();
+	if (pNodeA==nullptr||pNodeB==nullptr)
+	{
+		return false;
+	}
 	if (pNodeA->getTag()==BirdTag||pNodeB->getTag()==BirdTag)
 	{
 		GameLayer * pGameLayer = (GameLayer *)contact.getCurrentTarget();
-		pGameLayer->onBirdHitPips();
+		pGameLayer->onBirdHit();
 	}
 	return true;
 }

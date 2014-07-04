@@ -11,7 +11,7 @@ public:
 
 public:
 
-	bool onHitBegan(cocos2d::PhysicsContact& contact);
+	bool onHit(cocos2d::PhysicsContact& contact,cocos2d::PhysicsContactPreSolve& solve);
 
 	void onTouchBegan(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event *pEvent);
 };

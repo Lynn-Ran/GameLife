@@ -34,6 +34,11 @@ void BridSprite::fly()
 	runAction(m_pFlyAction);
 }
 
+void BridSprite::dead()
+{
+	stopAllActions();
+}
+
 Animation * BridSprite::createAnimation(const char * fmt)
 {
 	auto * frameCache = SpriteFrameCache::getInstance();

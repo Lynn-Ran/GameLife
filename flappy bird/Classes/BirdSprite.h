@@ -11,6 +11,8 @@ public:
 	void idle();
 
 	void fly();
+
+	void dead();
 protected:
 
 	cocos2d::Animation * createAnimation(const char * fmt);
