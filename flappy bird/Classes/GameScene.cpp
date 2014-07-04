@@ -51,6 +51,11 @@ bool GameScene::onHit(PhysicsContact& contact,PhysicsContactPreSolve& solve)
 	}
 	if (pNodeA->getTag()==BirdTag||pNodeB->getTag()==BirdTag)
 	{
+		Point v = solve.getSurfaceVelocity();
+		if (v.y>UpJumpSpeed)
+		{
+			solve.setSurfaceVelocity(v);
+		}
 		GameLayer * pGameLayer = (GameLayer *)contact.getCurrentTarget();
 		pGameLayer->onBirdHit();
 	}

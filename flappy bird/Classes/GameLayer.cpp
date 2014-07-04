@@ -31,6 +31,13 @@ bool GameLayer::init()
 	pnode->setPosition(visibleSize.width/2,landNode->getLandSize().height+sz.height/2);
 	addChild(pnode);
 
+	//发现有掉下去情况加个实体的
+	pnode = Node::create();
+	body = CreatePhysicsBody(PhysicsShapeBox::create(landNode->getLandSize()),false,false,LandMark,LandCollisionMark);
+	pnode->setPhysicsBody(body);
+	pnode->setPosition(landNode->getLandSize().width/2,landNode->getLandSize().height/2);
+	addChild(pnode);
+
 	//分数
 	pScore = NumberNode::create();
 	pScore->setPosition(Point(origin.x + visibleSize.width/2,origin.y + visibleSize.height * 6 / 7));
@@ -312,7 +319,7 @@ void GameLayer::onBirdHit()
 	{
 		auto body = pBird->getPhysicsBody();
 		Vect v = body->getVelocity();
-		if (v.x >0.0001f || v.y != 0.f)
+		if (v.x >0.0001f || v.y >0.0001f)
 			return;
 		OnGameState(eGameStatus_Over);
 	}
